@@ -1,0 +1,1 @@
+Edits made to slick.grid.js

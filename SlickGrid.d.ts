@@ -1,1 +1,1 @@
-/home/ken/WTS/wtswiki/d.ts/SlickGrid.d.ts
+../../d.ts/SlickGrid.d.ts

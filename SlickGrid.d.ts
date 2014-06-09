@@ -1,0 +1,1 @@
+../../d.ts/SlickGrid.d.ts

@@ -17,6 +17,8 @@
  *
  */
 
+var KK = true
+
 // make sure required JavaScript modules are loaded
 if (typeof jQuery === "undefined") {
     throw "SlickGrid requires jquery module to be loaded";
@@ -1399,7 +1401,13 @@ if (typeof Slick === "undefined") {
         }
 
         function createCssRules() {
-            $style = $("<style type='text/css' rel='stylesheet' />").appendTo($("head"));
+	    
+	    if( KK ) {
+		//
+	    } else {
+		$style = $("<style type='text/css' rel='stylesheet' />").appendTo($("head"));
+	    }
+
             var rowHeight = (options.rowHeight - cellHeightDiff);
             var rules = [
                 "." + uid + " .slick-header-column { left: 1000px; }",
@@ -1414,11 +1422,33 @@ if (typeof Slick === "undefined") {
                 rules.push("." + uid + " .r" + i + " { }");
             }
 
-            if ($style[0].styleSheet) { // IE
-                $style[0].styleSheet.cssText = rules.join(" ");
-            } else {
-                $style[0].appendChild(document.createTextNode(rules.join(" ")));
-            }
+	    if(KK) {
+
+		var styleEl = document.createElement('style')
+		$style = $(styleEl)
+		// Apparently some version of Safari needs the following line? I dunno.
+		styleEl.appendChild(document.createTextNode(''));
+		// Append style element to head
+		document.head.appendChild(styleEl);
+		var ss = styleEl.sheet;
+		for (var i = 0; i < rules.length;i++) {
+		    var r = rules[i]
+		    r = r.trim()
+		    if( r != "" ) {
+			ss.insertRule( r, ss.cssRules.length )
+		    }
+		}
+
+
+	    } else {
+
+		if ($style[0].styleSheet) { // IE
+                    $style[0].styleSheet.cssText = rules.join(" ");
+		} else {
+                    $style[0].appendChild(document.createTextNode(rules.join(" ")));
+		}
+
+	    }
         }
 
         function getColumnCssRules(idx) {
@@ -1589,10 +1619,8 @@ if (typeof Slick === "undefined") {
             for (var i = 0, headers = $headers.children(), ii = headers.length; i < ii; i++) {
                 h = $(headers[i]);
 
-		if( true ) {
-		    // KK FIX HERE
+		if(  KK  ) {
 		    // https://github.com/mleibman/SlickGrid/issues/742
-		    // KK FIX HERE
                     if (h.outerWidth() !== columns[i].width - headerColumnWidthDiff) {
 			h.outerWidth(columns[i].width - headerColumnWidthDiff);
                     }
@@ -1735,9 +1763,9 @@ if (typeof Slick === "undefined") {
                 handleScroll();
             }
 
-	    // KK FIX HERE
- 	    applyColumnHeaderWidths()
-	    // KK FIX HERE
+	    if( KK ) {
+ 		applyColumnHeaderWidths()
+	    }
         }
 
         function getOptions() {
